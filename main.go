@@ -58,7 +58,7 @@ func Run(filename string) error {
 	Mod.FileCurrent.New(filename)
 	f, x := os.Open(filename)
 	if x != nil {
-		fmt.Println("Sorry bro | the SkyLine interperter can not read the file, it may not exist -> ", x)
+		fmt.Println(Mod.ErrorSymBolMap[Mod.CODE_FILE_INTEGRITY_FILE_INVALID_FILE_DOES_NOT_EXIST](filename))
 		os.Exit(0)
 	}
 	defer f.Close()
@@ -68,11 +68,11 @@ func Run(filename string) error {
 		line = append(line, scanner.Text())
 	}
 	if line == nil {
-		fmt.Println("Sorry bro | the SkyLine interperter can not run this file through the interpreter, tokens were empty -> ", filename)
+		fmt.Println(Mod.ErrorSymBolMap[Mod.CODE_FILE_INTEGRITY_FILE_INVALID_MUST_HAVE_CODE_OR_LOGIC_INSIDE_FILE_NULL](filename))
 	}
 	data, x := ioutil.ReadFile(filename)
 	if x != nil {
-		fmt.Println("Sorry bro | the SkyLine interperter can not read the file, it may not exist -> ", x)
+		fmt.Println(Mod.ErrorSymBolMap[Mod.CODE_FILE_FAILED_USING_INPUT_OUTPUT_READER_AND_UTILITY_FILE_ISSUE](filename, fmt.Sprint(x)))
 		os.Exit(1)
 	}
 	parser := Mod.New_Parser(Mod.LexNew(string(data)))
@@ -90,7 +90,7 @@ func Run(filename string) error {
 		if xy := recover(); xy != nil {
 			if strings.Contains(fmt.Sprint(xy), "invalid memory address or nil pointer dereference") {
 				if *Mod.ErrorsTrace {
-					fmt.Println("SkyLine parser: no functions or variables loaded...")
+					fmt.Println(Mod.ErrorSymBolMap[Mod.CODE_NO_FUNCTIONS_OR_SYMBOLS_LOADED](filename))
 				}
 			}
 		}
@@ -99,3 +99,4 @@ func Run(filename string) error {
 
 	return x
 }
+
